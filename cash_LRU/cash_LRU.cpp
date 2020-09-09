@@ -5,18 +5,29 @@
 
 struct node_t
 {
-	int value;
+	int request;
 	int year;
 	int hash_key;
 };
 
+class cash
+{
+		std::list<node_t> cash_list;
+		std::unordered_map<int , std::list<node_t>::iterator> cash_table;
+		int p;
+		int counter;
+	public:
+		cash(int MAX);
+		void look_up(int request);
+};
+
 int main()
 {
-	std::list<node_t> first_list;
+	/*std::list<node_t> first_list;
 	node_t A[10];
 	for (int i = 0 ; i < 10 ; i++)
 	{
-		A[i].value = i;
+		A[i].request = i;
 		A[i].year = i;
 	};
 	for (int i = 0 ; i < 10 ; i++)
@@ -29,15 +40,16 @@ int main()
 	A[3].year = 3000;
 	first_list.push_back(A[1]);
 	first_list.push_front(A[2]);
-	std::list<node_t> :: iterator it = first_list.begin();
+	std::list<node_t>::iterator it = first_list.begin();
 	std::advance(it , 5);
 	first_list.insert(it , A[3]);
 	unordered_map<int , node_t> first_map;
 	first_map[0] = A[3];
-	std::unordered_map<int , node_t> ::iterator = first_map.find(0);
-	
 	for (node_t n : first_list) 
         std::cout << n.year << '\n';
+	unordered_map<int , node_t> first_map;
+	first_map[0] = A[3];
+	std::unordered_map<int , node_t>::iterator = first_map.find(0);*/
 	return 0;
 };
 	
