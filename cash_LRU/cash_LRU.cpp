@@ -26,7 +26,7 @@ cash::cash(int MAX)
 	std::list<node_t> cash_list;
 	std::unordered_map<int , std::list<node_t>::iterator> cash_table;
 	p = MAX;
-	counter = 0;
+	int counter = 0;
 };
 
 void cash::look_up(int request)
@@ -34,13 +34,12 @@ void cash::look_up(int request)
 	node_t A;
 	A.request = request;
 	A.year = 1;
-	A.hash_key = counter;
-	counter++;
+	A.hash_key = request;
 	cash_list.push_front(A);
 	std::list<node_t>::iterator it = cash_list.begin();
 	cash_table[counter] = it;
-	for(node_t n : cash_list)
-		std::cout << n.request << '\n';
+	/*for(node_t n : cash_list)
+		std::cout << n.request << '\n';*/
 };
 
 int main()
