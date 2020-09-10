@@ -21,8 +21,33 @@ class cash
 		void look_up(int request);
 };
 
+cash::cash(int MAX)
+{
+	std::list<node_t> cash_list;
+	std::unordered_map<int , std::list<node_t>::iterator> cash_table;
+	p = MAX;
+	counter = 0;
+};
+
+void cash::look_up(int request)
+{
+	node_t A;
+	A.request = request;
+	A.year = 1;
+	A.hash_key = counter;
+	counter++;
+	cash_list.push_front(A);
+	std::list<node_t>::iterator it = cash_list.begin();
+	cash_table[counter] = it;
+	for(node_t n : cash_list)
+		std::cout << n.request << '\n';
+};
+
 int main()
 {
+	cash LFU(10);
+	for (int i = 0 ; i < 10 ; i++)
+		LFU.look_up(i);
 	/*std::list<node_t> first_list;
 	node_t A[10];
 	for (int i = 0 ; i < 10 ; i++)
