@@ -14,6 +14,7 @@ class cash
 		std::list<node_t> cash_list;
 		std::unordered_map<int , std::list<node_t>::iterator> cash_table;
 		int max;
+		//void shift_down(int request);
 	public:
 		cash(int MAX);
 		void look_up(int request);
@@ -42,22 +43,27 @@ void cash::look_up(int request)
 			cash_list.push_front(put);
 			std::list<node_t>::iterator it = cash_list.begin();
 			cash_table[put.request] = it;
-		};
-		/*else
+		}
+		else
 		{
-			cash_table.erase(cash_table.find(request));
+			cash_table.erase(cash_table.find(cash_list.begin() -> request));
 			cash_list.pop_front();
 			cash_list.push_front(put);
 			std::list<node_t>::iterator it = cash_list.begin();
 			cash_table[put.request] = it;
-		};*/
+		};
 	};
 };
+
+//void cash::shift_down(int request)
 
 void cash::print_cash()
 {
 	for (node_t n : cash_list)
-		std::cout << n.request << '-' << n.year <<'\n';
+		std::cout << n.request << '-' << n.year <<'\t';
+	std::cout << '\n';
+	std:: cout  << cash_list.size() << '\t';
+	std:: cout << cash_table.size() << '\n';	
 };
 
 int main()
@@ -67,7 +73,7 @@ int main()
 		LFU.look_up(i);
 	for (int i = 0 ; i < 9 ; i++)
 		LFU.look_up(i);
-	LFU.look_up(7);
+	LFU.look_up(11);
 	LFU.print_cash();
 	return 0;
 };
