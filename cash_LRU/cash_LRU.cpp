@@ -13,7 +13,11 @@ class cash
 {
 		std::list<node_t> cash_list;
 		std::unordered_map<int , std::list<node_t>::iterator> cash_table;
+		//void swap_node(std::list<node_t>::iterator node_1 , std::list<node_t>::iterator node_2);
+		//void shift_down(int request);
 		int max;
+		int counter;
+		int tryes;
 	public:
 		cash(int MAX);
 		void look_up(int request);
@@ -25,14 +29,18 @@ cash::cash(int MAX)
 	std::list<node_t> cash_list;
 	std::unordered_map<int , std::list<node_t>::iterator> cash_table;
 	max = MAX;
+	counter = 0;
+	tryes = 0;
 };
 
 void cash::look_up(int request)
 {
+	tryes++;
 	node_t put;
 	if (cash_table.find(request) != cash_table.end())
 	{
 		(cash_table[request] -> year)++;
+		counter++;
 	}
 	else
 	{
@@ -69,18 +77,23 @@ void cash::print_cash()
 		std::cout << n.request << '-' << n.year <<'\t';
 	std::cout << '\n';
 	std:: cout  << cash_list.size() << '\t';
-	std:: cout << cash_table.size() << '\n';	
+	std:: cout << cash_table.size() << '\n';
+	std:: cout << counter << '\t' << tryes << '\n';
 };
 
 int main()
 {
-	cash LFU(50);
-	for (int i = 0 ; i < 500 ; i++)
-		LFU.look_up(i);
-	for (int i = 1 ; i < 10 ; i++)
-		LFU.look_up(i);
-	LFU.look_up(11);
-	LFU.print_cash();
+	int sizeof_cash = 0 , count_req = 0 , request = 0;
+	std:: cin >> sizeof_cash >> count_req; 
+	std:: cout << '\n';
+	cash cash_LFU(sizeof_cash);
+	for (int i = 0 ; i < count_req ; i++)
+	{
+		std:: cin >> request;
+		std:: cout << '\n';
+		cash_LFU.look_up(request);
+	};
+	cash_LFU.print_cash();
 	return 0;
 };
 	
