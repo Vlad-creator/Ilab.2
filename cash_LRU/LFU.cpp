@@ -1,10 +1,10 @@
-#include <iostream>
-/*#include <list>
+/*#include <iostream>
+#include <list>
 #include <unordered_map>
 #include <iterator>*/
 #include "cash.h"
 
-/*template<typename T>
+template<typename T>
 cash<T>::cash(int MAX)
 {
 	std::list<node_t<T>> cash_list;
@@ -63,21 +63,4 @@ void cash<T>::print_cash()
 	std:: cout  << cash_list.size() << '\t';
 	std:: cout << cash_table.size() << '\n';
 	std:: cout << counter << '\t' << tryes << '\n';
-};*/
-
-int main()
-{
-	int sizeof_cash = 0 , count_req = 0;
-	type request = 0;
-	std:: cin >> sizeof_cash >> count_req; 
-	std:: cout << '\n';
-	cash<> LFU(sizeof_cash);
-	for (int i = 0 ; i < count_req ; i++)
-	{
-		std:: cin >> request;
-		LFU.look_up(request);
-	};
-	LFU.print_cash();
-	return 0;
-}
-
+};
