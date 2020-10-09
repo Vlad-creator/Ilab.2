@@ -1,7 +1,3 @@
-/*#include <iostream>
-#include <list>
-#include <unordered_map>
-#include <iterator>*/
 #include "cash.h"
 
 template<typename T>
