@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>
 #include <assert.h>
 
 template<typename T>
@@ -17,7 +18,7 @@ class matrix
 		matrix<T>& operator+(const matrix& rhs);
 		matrix<T>& operator-(const matrix& rhs);
 		matrix<T>& operator*(const matrix& rhs);
-		//matrix<T>& operator[](const matrix& rhs);
+		matrix<T> operator[](const matrix& rhs);
 		int* operator[](const int rhs);
 		~matrix();
 		int count_col() const {return num_col;};
@@ -29,7 +30,7 @@ class matrix
 		void put_M(int str , int col , T val) const {mrx[str][col] = val;};
 		matrix<T> transpotion ();
 		//T minor_T(int str , int col);
-		//T determinate();
+		T determinate();
 		//matrix<T> reverse(matrix A);
 		void negate();
 };
@@ -92,15 +93,26 @@ int* matrix<T>::operator[](const int rhs)
 	return str;
 };
 
-// matrix<int> A{5, 5, 3};
-// matrix<int> B{2, 3, 8};
-// A = A.operator=(B);
+template<typename T>
+matrix<T> matrix<T>::operator[](const matrix& rhs)
+{
+	assert(num_str == rhs.count_col());
+	int sum = 0;
+	matrix result(num_str , rhs.count_col());
+	assert(num_str == rhs.count_col());
+	for (int i = 0 ; i < num_str ; i++)
+	{
+		for(int j = 0 ; j < rhs.count_col() ; j++)
+		{
+			for (int k = 0 ; k < num_col ; k++)
+				sum = sum + mrx[i][k] * rhs.get_val(k , j);
+			result.put_M(i , j , sum);
+			sum = 0;
+		};
+	};
+	return result;
+};
 
-
-// matrix<int> A{...};
-// int k = A.count_col(); => int k = count_col(const Matrix<A>* this)
-
-//matrix<int> &B = (-A).negate();
 
 template<typename T>
 matrix<T>::matrix(const matrix& rhs)
@@ -194,48 +206,50 @@ void matrix<T>::negate()
 		for (int j = 0 ; j < num_col ; j++)
 			mrx[i][j] = (-1) * mrx[i][j];
 }
-/*
+
 template<typename T>
-T matrix<T>::minor_T(int str , int col)
+T matrix<T>::determinate()
 {
-	if (type == 0)
-	{
-		std::cout << "Дурак , с такой не работает";
+	assert(num_str == num_col);
+	if (mrx[0][0] == 0)
 		return 0;
-	};
-	matrix<T> min(num_col - 1);
-	int i_m = 0;
-	int j_m = 0;
-	for (int i = 0 ; i < num_col ; ++i)
+	matrix<T> L(num_str);
+	matrix<T> U(num_str);
+	T sum1 = 0;
+	T sum2 = 0;
+	T det = 1;
+	for (int j = 0 ; j < num_str ; j++)
 	{
-		if (i != str)
-		{
-			for (int j = 0 ; j < num_col ; ++j)
-			{	
-				if (j != col)
-				{
-					min.put_M(i_m , j_m , mrx[j][i]);
-					j_m++;
-				};
-			};
-			i_m++;
-			j_m = 0;
-		};
+		U.put_M(0 , j , mrx[0][j]);
+		L.put_M(j , 0 , mrx[j][0] / U.get_val(0 , 0));
 	};
-
-	min.print_M();
-
-	std::cout << "\n";
-
-	//return (mrx[col][str] * min.determinate());
-}*/
+	for (int i = 1 ; i < num_str ; i++)
+		for (int j = i ; j < num_str ; j++)
+		{
+			for (int k = 0 ; k < i ; k++)
+			{
+				sum1 += L.get_val(i , k) * U.get_val(k , j);
+				sum2 += L.get_val(j , k) * U.get_val(k , i);
+			};
+			U.put_M(i , j , mrx[i][j] - sum1);
+			if (U.get_val(i , j) == 0)
+				return 0;
+			L.put_M(j , i , (mrx[j][i] - sum2) / U.get_val(i , i));
+			sum1 = 0;
+			sum2 = 0;
+		};
+	for (int i = 0 ; i < num_str ; i++)
+		det = det * U.get_val(i , i);
+	return det;
+};
 
 int main()
 {
-	matrix<int> test_1(2);
-	int res = test_1.fill_M();
-	std::cout << test_1[1][1];
-	//int det = test.determinate();
-	//std::cout << det << "\n";
+	int size = 0;
+	std::cin >> size;
+	matrix<float> test_1(size);
+	test_1.fill_M();
+	float det = test_1.determinate();
+	std::cout << det << '\n';
 	return 0;
 }
