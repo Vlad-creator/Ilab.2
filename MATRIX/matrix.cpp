@@ -251,7 +251,7 @@ matrix<T>::matrix(int num_s , int num_c , It start , It fin)
 template<typename T>
 matrix<T>::~matrix()
 {
-	for (int i = 0 ; i < num_col ; ++i)
+	for (int i = 0 ; i < num_str ; ++i)
 		delete[] mrx[i];
 	delete[] mrx;
 }
@@ -350,14 +350,20 @@ T matrix<T>::determinate()
 			for (int l = 0 ; l < num_col - i ; l++)
 				row[l] = copy.get_val(i , l + i);
 			copy.row_k(i , per);
-			copy.print_M();
 			copy.sub_rows(j , i);
-			copy.print_M();
 			for (int l = 0 ; l < num_col - i ; l++)
 				copy.put_M(i , l + i , row[l]);
 			delete[] row;
 		};
 	};
+	for (int i = 0 ; i < num_str ; ++i)
+		for (int j = 0 ; j < num_col ; ++j)
+		{
+			T val = copy.get_val(i , j);
+			iszero(&val);
+			copy.put_M(i , j , val);
+		}
+	copy.print_M();
 	iszero(&det);
 	return det;
 }
@@ -409,11 +415,7 @@ using namespace Matrix_Ilab;
 
 int main()
 {
-	int size = 0;
-	std::cin >> size;
-	matrix<float> test_1(size);
-	test_1.fill_M();
-	float det = test_1.determinate();
-	std::cout << det << "\n";
+	matrix<int> t(2 , 4);
+	matrix<int> r(4 , 2);
 	return 0;
 };
