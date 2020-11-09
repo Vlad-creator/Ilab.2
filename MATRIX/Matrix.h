@@ -1,13 +1,9 @@
 #include <iostream>
 #include <iomanip>
 #include <assert.h>
-
-#define DBL_EPSILON 0.0000001
-
-
+#include <cfloat>
 
 namespace Matrix_Ilab{
-
 
 template<typename T>
 class matrix
@@ -18,11 +14,13 @@ class matrix
 		int count;
 		T** mrx;
 	public:
+		//matrix<T>(int num_str , int num_col , T val = T{});
 		matrix<T>(int num_str , int num_col);
 		matrix<T>(int num);
-		//matrix<T>(int num_str , int num_col , T val = T{});
 		template <typename It>
 		matrix<T>(int cols, int rows, It start, It fin);
+		template <typename It>
+		matrix<T>(int num , It start , It fin);
 		matrix(const matrix& rhs);
 		~matrix();
 		matrix<T>& operator=(const matrix& rhs);
@@ -42,7 +40,7 @@ class matrix
 		T get_val(int str , int col) const {return mrx[str][col];};
 		void put_M(int str , int col , T val) const {mrx[str][col] = val;};
 		void swap_rows(int row_1 , int row_2);
-		void sub_rows(int row_1 , int row_2);
+		void sub_rows(int row_1 , int row_2);//row_1 - row_2
 		void row_k(int row , float k);
 		void fill_M();
 		void fill_M_rand();
@@ -247,6 +245,25 @@ matrix<T>::matrix(int num_s , int num_c , It start , It fin)
 		};
 }
 
+template <typename T>
+template <typename It>
+matrix<T>::matrix(int num , It start , It fin)
+{
+	num_col = num;
+	num_str = num;
+	mrx = new T* [num];
+	for (int j = 0 ; j < num ; ++j)
+		mrx[j] = new T [num];
+	count = num_col * num_str;
+	(num_col == num_str) ? type = 1 : type = 0;
+	for (int i = 0 ; i < num ; ++i)
+		for (int j = 0 ; j < num ; ++j)
+		{
+			mrx[i][j] = *start;
+			start++;
+		};
+}
+
 template<typename T>
 matrix<T>::~matrix()
 {
@@ -258,9 +275,9 @@ matrix<T>::~matrix()
 template<typename T>
 void matrix<T>::fill_M()
 {
-	for (int i = 0 ; i < num_str ; i++)
+	for (int i = 0 ; i < num_str ; ++i)
 	{
-		for (int j = 0 ; j < num_col ; j++)
+		for (int j = 0 ; j < num_col ; ++j)
 			std::cin >> mrx[i][j];
 	}
 }
@@ -294,9 +311,9 @@ matrix<T> matrix<T>::transpotion()
 {
 	int num_s = count_str();
 	int num_c = count_col();
-	matrix<T> A_trans(num_s , num_c);
-	for (int i = 0 ; i < num_s ; i++)
-		for (int j = 0 ; j < num_c ; j++)
+	matrix<T> A_trans(num_c , num_s);
+	for (int i = 0 ; i < num_c ; i++)
+		for (int j = 0 ; j < num_s ; j++)
 			A_trans.put_M(i , j , get_val(j , i));
 	return A_trans;
 }
@@ -312,7 +329,7 @@ void matrix<T>::negate()
 template<typename T>
 T matrix<T>::determinate()
 {
-	assert(num_str == num_col);
+	assert(type == 1);
 	matrix copy = *this;
 	T det = 1;
 	for (int i = 0 ; i < num_str ; i++)
@@ -338,7 +355,11 @@ T matrix<T>::determinate()
 				max = copy.get_val(j , i);
 				num_s = j;
 			};
-		copy.swap_rows(num_s , i);
+		if (num_s != i)
+		{
+			copy.swap_rows(num_s , i);
+			det = det * (-1);
+		};
 		det = det * copy.get_val(i , i);
 		for (int j = i ; j < num_str ; ++j)
 		{
@@ -362,8 +383,8 @@ T matrix<T>::determinate()
 			iszero(&val);
 			copy.put_M(i , j , val);
 		}
-	copy.print_M();
 	iszero(&det);
+	//copy.print_M();
 	return det;
 }
 
@@ -409,17 +430,3 @@ void iszero(T* per)
 }
 
 }
-
-using namespace Matrix_Ilab;
-
-/*int main()
-{
-	int size = 0;
-	std::cin >> size;
-	matrix<float> test_1(size);
-	test_1.fill_M_rand();
-	test_1.print_M();
-	float det = test_1.determinate();
-	std::cout << det << "\n";
-	return 0;
-};*/
