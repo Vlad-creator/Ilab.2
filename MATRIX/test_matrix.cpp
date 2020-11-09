@@ -1,6 +1,8 @@
 #include "Matrix.h"
 #include "gtest/gtest.h"
 
+using namespace Matrix_Ilab;
+
 TEST (equal , test) {
 	std::vector<int> v_1 = {1 , 2 , 3 , 4 , 456 , 33 , 20 , 34};
 	std::vector<int> v_2 = {1 , 2 , 3 , 4 , 456 , 33 , 23 , 34};
@@ -169,15 +171,190 @@ TEST (eq , test) {
     EXPECT_EQ (1, test_res_2 == (test2 = test_2));
 };
 
-int main()
+TEST (oper_matr_um , test) { 
+	std::vector<int> v_1 = {1 , 2 , 3 , 4};
+	std::vector<int> v_2 = {1 , 2 , 3 , 4};
+	std::vector<int> v_res = {7 , 10 , 15 , 22};
+	matrix<int> test_1(2 , 2 , v_1.begin() , v_1.end());
+	matrix<int> test_2(2 , 2 , v_2.begin() , v_2.end());
+	matrix<int> test_res_1(2 , 2 , v_res.begin() , v_res.end());
+    EXPECT_EQ (1, test_res_1 == (test_1[test_2]));
+
+    v_1 = {2 , 3 , 4 , 5};
+    v_2 = {1 , 0 , 0 , 1};
+    v_res = {2 , 3 , 4 , 5};
+    matrix<int> test_3(2 , 2 , v_1.begin() , v_1.end());
+	matrix<int> test_4(2 , 2 , v_2.begin() , v_2.end());
+	matrix<int> test_res_2(2 , 2 , v_res.begin() , v_res.end());
+	EXPECT_EQ (1, test_res_2 == (test_3[test_4]));
+
+	v_1 = {156 , 3456 , 409 , -68};
+    v_2 = {0 , 0 , 0 , 0};
+    v_res = {0 , 0 , 0 , 0};
+    matrix<int> test_5(2 , 2 , v_1.begin() , v_1.end());
+	matrix<int> test_6(2 , 2 , v_2.begin() , v_2.end());
+	matrix<int> test_res_3(2 , 2 , v_res.begin() , v_res.end());
+	EXPECT_EQ (1, test_res_3 == (test_5[test_6]));
+
+	v_1 = {1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9 , 10};
+    v_2 = {11 , 12 , 13 , 14 , 15 , 16 , 17 , 18 , 19 , 20};
+    v_res = {43	, 46 , 49 , 52 , 55 , 
+    	     97 , 104 , 111 , 118 , 125 , 
+    	     151 , 162 , 173 , 184 , 195 , 
+    	     205 , 220 , 235 , 250 , 265 ,
+    	     259 , 278 , 297 , 316 ,335};
+    matrix<int> test_7(5 , 2 , v_1.begin() , v_1.end());
+	matrix<int> test_8(2 , 5 , v_2.begin() , v_2.end());
+	matrix<int> test_res_4(5 , 5 , v_res.begin() , v_res.end());
+	EXPECT_EQ (1, test_res_4 == (test_7[test_8]));
+};
+
+TEST (swap_rows , test) {
+	std::vector<int> v = {1 , 2 , 3 , 4 , 5 , 6 , 7 , 8};
+	std::vector<int> v_res = {5 , 6 , 7 , 8 , 1 , 2 , 3 , 4};
+	matrix<int> test_1(2 , 4 , v.begin() , v.end());
+	matrix<int> test_res_1(2 , 4 , v_res.begin() , v_res.end());
+	test_1.swap_rows(0 , 1);
+	EXPECT_EQ (1, test_res_1 == test_1);
+
+	v = {1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9};
+	v_res = {7 , 8 , 9 , 4 , 5 , 6 , 1 , 2 , 3};
+	matrix<int> test_2(3 , 3 , v.begin() , v.end());
+	matrix<int> test_res_2(3 , 3 , v_res.begin() , v_res.end());
+	test_2.swap_rows(0 , 2);
+	EXPECT_EQ (1, test_res_2 == test_2);
+
+	v = {1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9 , 10 , 11 , 12 , 13 , 14 , 15 , 16};
+	v_res = {1 , 2 , 3 , 4 , 13 , 14 , 15 , 16 , 9 , 10 , 11 , 12 , 5 , 6 , 7 , 8};
+	matrix<int> test_3(4 , 4 , v.begin() , v.end());
+	matrix<int> test_res_3(4 , 4 , v_res.begin() , v_res.end());
+	test_3.swap_rows(1 , 3);
+	EXPECT_EQ (1, test_res_3 == test_3);
+};
+
+TEST (sub_rows , test) {
+	std::vector<int> v = {1 , 2 , 3 , 4 , 5 , 6 , 7 , 8};
+	std::vector<int> v_res = {1 , 2 , 3 , 4 , 4 , 4 , 4 , 4};
+	matrix<int> test_1(2 , 4 , v.begin() , v.end());
+	matrix<int> test_res_1(2 , 4 , v_res.begin() , v_res.end());
+	test_1.sub_rows(1 , 0);
+	EXPECT_EQ (1, test_res_1 == test_1);
+
+	v = {1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9};
+	v_res = {-6 , -6 , -6 , 4 , 5 , 6 , 7 , 8 , 9};
+	matrix<int> test_2(3 , 3 , v.begin() , v.end());
+	matrix<int> test_res_2(3 , 3 , v_res.begin() , v_res.end());
+	test_2.sub_rows(0 , 2);
+	EXPECT_EQ (1, test_res_2 == test_2);
+
+	v = {1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9 , 10 , 11 , 12 , 13 , 14 , 15 , 16};
+	v_res = {1 , 2 , 3 , 4 , -8 , -8 , -8 , -8 , 9 , 10 , 11 , 12 , 13 , 14 , 15 , 16};
+	matrix<int> test_3(4 , 4 , v.begin() , v.end());
+	matrix<int> test_res_3(4 , 4 , v_res.begin() , v_res.end());
+	test_3.sub_rows(1 , 3);
+	EXPECT_EQ (1, test_res_3 == test_3);
+};
+
+TEST (row_k , test) {
+	std::vector<int> v = {1 , 2 , 3 , 4 , 5 , 6 , 7 , 8};
+	std::vector<int> v_res = {1 , 2 , 3 , 4 , 0 , 0 , 0 , 0};
+	matrix<int> test_1(2 , 4 , v.begin() , v.end());
+	matrix<int> test_res_1(2 , 4 , v_res.begin() , v_res.end());
+	test_1.row_k(1 , 0);
+	EXPECT_EQ (1, test_res_1 == test_1);
+
+	v = {1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9};
+	v_res = {10 , 20 , 30 , 4 , 5 , 6 , 7 , 8 , 9};
+	matrix<int> test_2(3 , 3 , v.begin() , v.end());
+	matrix<int> test_res_2(3 , 3 , v_res.begin() , v_res.end());
+	test_2.row_k(0 , 10);
+	EXPECT_EQ (1, test_res_2 == test_2);
+
+	v = {1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9 , 10 , 11 , 12 , 13 , 14 , 15 , 16};
+	v_res = {1 , 2 , 3 , 4 , 15 , 18 , 21 , 24 , 9 , 10 , 11 , 12 , 13 , 14 , 15 , 16};
+	matrix<int> test_3(4 , 4 , v.begin() , v.end());
+	matrix<int> test_res_3(4 , 4 , v_res.begin() , v_res.end());
+	test_3.row_k(1 , 3);
+	EXPECT_EQ (1, test_res_3 == test_3);
+};
+
+TEST (negate , test){
+	std::vector<int> v = {1 , 2 , 3 , 4 , 5 , 6 , 7 , 8};
+	std::vector<int> v_res = {-1 , -2 , -3 , -4 , -5 , -6 , -7 , -8};
+	matrix<int> test_1(2 , 4 , v.begin() , v.end());
+	matrix<int> test_res_1(2 , 4 , v_res.begin() , v_res.end());
+	test_1.negate();
+	EXPECT_EQ (1, test_res_1 == test_1);
+
+	v = {1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9};
+	v_res = {-1 , -2 , -3 , -4 , -5 , -6 , -7 , -8 , -9};
+	matrix<int> test_2(3 , 3 , v.begin() , v.end());
+	matrix<int> test_res_2(3 , 3 , v_res.begin() , v_res.end());
+	test_2.negate();
+	EXPECT_EQ (1, test_res_2 == test_2);
+
+	v = {1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9 , 10 , 11 , 12 , 13 , 14 , 15 , 16};
+	v_res = {-1 , -2 , -3 , -4 , -5 , -6 , -7 , -8 , -9 , -10 , -11 , -12 , -13 , -14 , -15 , -16};
+	matrix<int> test_3(4 , 4 , v.begin() , v.end());
+	matrix<int> test_res_3(4 , 4 , v_res.begin() , v_res.end());
+	test_3.negate();
+	EXPECT_EQ (1, test_res_3 == test_3);
+};
+
+TEST (transpotion , test){
+	std::vector<int> v = {1 , 2 , 3 , 4 , 5 , 6 , 7 , 8};
+	std::vector<int> v_res = {1 , 5 , 2 , 6 , 3 , 7 , 4 , 8};
+	matrix<int> test_1(2 , 4 , v.begin() , v.end());
+	matrix<int> test_res_1(4 , 2 , v_res.begin() , v_res.end());
+	matrix<int>test_1_res = (test_1.transpotion());
+	EXPECT_EQ (1, test_res_1 == test_1_res);
+
+	v = {1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9};
+	v_res = {1 , 4 , 7 , 2 , 5 , 8 , 3 , 6 , 9};
+	matrix<int> test_2(3 , 3 , v.begin() , v.end());
+	matrix<int> test_res_2(3 , 3 , v_res.begin() , v_res.end());
+	matrix<int>test_2_res = (test_2.transpotion());
+	EXPECT_EQ (1, test_res_2 == test_2_res);
+
+	v = {1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9 , 10 , 11 , 12 , 13 , 14 , 15};
+	v_res = {1 , 6 , 11 , 2 , 7 , 12 , 3 , 8 , 13 , 4 , 9 , 14 , 5 , 10 , 15};
+	matrix<int> test_3(3 , 5 , v.begin() , v.end());
+	matrix<int> test_res_3(5 , 3 , v_res.begin() , v_res.end());
+	matrix<int>test_3_res = (test_3.transpotion());
+	EXPECT_EQ (1, test_res_3 == test_3_res);
+};
+
+TEST (determinant , the_main_test)
 {
-	matrix<int> test_1(3 , 2);
-	matrix<int> test_2(2 , 5);
-	test_1.fill_M();
-	test_2.fill_M();
-	matrix<int> res = test_1[test_2];
-	res.print_M();
-	return 0;
-}
+	std::vector<long double> v = {1 , 2 , 3 , 4};
+	matrix<long double> test_1(2 , v.begin() , v.end());
+	long double res = -2;
+	EXPECT_FLOAT_EQ (res , test_1.determinate());
+
+	v = {1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9};
+	matrix<long double> test_2(3 , v.begin() , v.end());
+	res = 0;
+	EXPECT_FLOAT_EQ (res , test_2.determinate());
+
+	v = {23 , -15 , 23 , 1 , 34 , -65 , -2 , 4 , 54 , 10 , -3 , -4 , 1 , 2 , 3 , 4};
+	matrix<long double> test_3(4 , v.begin() , v.end());
+	res = 385719;
+	EXPECT_FLOAT_EQ (res , test_3.determinate());
+
+	v = {-2 , 1 , 2 , 0 , -2 , 0 , 1 , -3 , 4 , -4 , -3 , 2 , -5 , 4 , -2 , 1 , -5 , 1 , -3 , 1 , -4 , 3 , 2 , 4 , -3};
+	matrix<long double> test_4(5 , v.begin() , v.end());
+	res = 907;
+	EXPECT_FLOAT_EQ (res , test_4.determinate());
+
+	v = {-2 , 1 ,  2 , 0 , -2 , 0 , 1 , -3 , 4 , -4 , -3 , 2 , -5 , 4 , -2 , 1 , -5 , 1 , -3 , 1 , -4 , 3 , 2 , 4 , -3 , -5 , -3 , -2 , 2 , 0 , 4 , -3 , -3 , 3 , 4 , 2};
+	matrix<long double> test_5(6 , v.begin() , v.end());
+	res = 10060;
+	EXPECT_FLOAT_EQ (res , test_5.determinate());
+
+	v = {-2 , 1 , 2 , 0 , -2 , 0 , 1 , -3 , 4 , -4 , -3 , 2 , -5 , 4 , -2 , 1 , -5 , 1 , -3 , 1 , -4 , 3 , 2 , 4 , -3 , -5 , -3 , -2 , 2 , 0 , 4 , -3 , -3 , 3 , 4 , 2 , -2 , 1 , -4 , -3 , 4 , -2 , -4 , 4 , -1 , 2 , 3 , -1 , 0};
+	matrix<long double> test_6(7 , v.begin() , v.end());
+	res = -123437;
+	EXPECT_FLOAT_EQ (res , test_6.determinate());
+};
 
 //-lgtest -lgtest_main -lpthread
