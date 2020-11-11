@@ -9,6 +9,6 @@ int main()
 	matrix<long double> test(size);
 	test.fill_M();
 	long double det = test.determinate();
-	std::cout << det;
+	std::cout << det << std::endl;
 	return 0;
 }
