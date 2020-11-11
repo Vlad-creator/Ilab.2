@@ -5,6 +5,7 @@
 
 namespace {
 
+//Опредение равно ли число нулю
 template<typename T>
 void iszero(T* per)
 {
@@ -12,6 +13,7 @@ void iszero(T* per)
 		*per = 0;
 }
 
+//замена двух значений
 template<typename T>
 void swap(T* per_1 , T* per_2)
 {
@@ -20,7 +22,7 @@ void swap(T* per_1 , T* per_2)
 	*per_2 = per;
 }
 
-};
+}
 
 
 namespace Matrix_Ilab{
@@ -60,7 +62,7 @@ class matrix
 		T get_val(int str , int col) const {return mrx[str][col];};
 		void put_M(int str , int col , T val) const {mrx[str][col] = val;};
 		void swap_rows(int row_1 , int row_2);
-		void sub_rows(int row_1 , int row_2, T k = 1);//row_1 - row_2
+		void sub_rows_k(int row_1 , int row_2, T k = 1);//row_1 - row_2
 		void row_k(int row , float k);
 		void fill_M();
 		void fill_M_rand();
@@ -107,6 +109,7 @@ matrix<T>& matrix<T>::operator-(const matrix& rhs)
 	return buf;
 }
 
+//Умножает матрицы ка логично
 template<typename T>
 matrix<T>& matrix<T>::operator*(const matrix& rhs)
 {
@@ -128,6 +131,7 @@ int* matrix<T>::operator[](const int rhs)
 	return str;
 }
 
+//Умножает матрицы как надо это делать правильно
 template<typename T>
 matrix<T> matrix<T>::operator[](const matrix& rhs)
 {
@@ -287,6 +291,7 @@ matrix<T>::~matrix()
 	delete[] mrx;
 }
 
+//заполняет матрицу с потока ввода
 template<typename T>
 void matrix<T>::fill_M()
 {
@@ -297,6 +302,7 @@ void matrix<T>::fill_M()
 	}
 }
 
+//заполняет матрицу случайными значениями
 template<typename T>
 void matrix<T>::fill_M_rand()
 {
@@ -305,6 +311,7 @@ void matrix<T>::fill_M_rand()
 			mrx[i][j] = ((rand() % 10) - 5);
 }
 
+//выводит на экран матрицу со всеми её данными
 template<typename T>
 void matrix<T>::print_M()
 {
@@ -321,6 +328,7 @@ void matrix<T>::print_M()
 	std::cout << "\n";
 }
 
+//выполняет транспонирование матрицы
 template<typename T>
 matrix<T> matrix<T>::transpotion()
 {
@@ -333,6 +341,7 @@ matrix<T> matrix<T>::transpotion()
 	return A_trans;
 }
 
+//домножает матрицу на (-1)
 template<typename T>
 void matrix<T>::negate()
 {
@@ -341,6 +350,7 @@ void matrix<T>::negate()
 			mrx[i][j] = (-1) * mrx[i][j];
 }
 
+//функция нахождения детерминанта
 template<typename T>
 T matrix<T>::determinate()
 {
@@ -370,7 +380,7 @@ T matrix<T>::determinate()
 		 for (int j = i + 1 ; j < num_str ; ++j)
 		 {
 		 	T per = copy.get_val(j , i) / max;
-		 	copy.sub_rows(j , i , per);
+		 	copy.sub_rows_k(j , i , per);
 		 }
 	}
 	det *= copy.get_val(num_str - 1, num_str - 1);
@@ -378,6 +388,7 @@ T matrix<T>::determinate()
 	return det;
 }
 
+//меняет местами две строки в матрице
 template<typename T>
 void matrix<T>::swap_rows(int row_1 , int row_2)
 {
@@ -387,8 +398,9 @@ void matrix<T>::swap_rows(int row_1 , int row_2)
 		::swap(&mrx[row_1][i] , &mrx[row_2][i]);
 }
 
+//вычитает из row_1 row_2 умноженное на k
 template<typename T>
-void matrix<T>::sub_rows(int row_1 , int row_2, T k)
+void matrix<T>::sub_rows_k(int row_1 , int row_2, T k)
 {
 	assert(row_1 < num_str);
 	assert(row_2 < num_str);
@@ -397,18 +409,10 @@ void matrix<T>::sub_rows(int row_1 , int row_2, T k)
 }
 
 template<typename T>
-void matrix<T>::row_k(int row , float k)
-{
-	assert(row < num_str);
-	for (int i = 0 ; i < num_col ; i++)
-		mrx[row][i] = mrx[row][i] * k;
-}
-
-template<typename T>
 void matrix<T>::make_type_long_double()
 {
 	for (int i = 0 ; i < num_str ; ++i)
-		for ( int j = 0 ; i < num_col ; ++j)
+		for ( int j = 0 ; j < num_col ; ++j)
 			(long double)mrx[i][j];
 }
 
