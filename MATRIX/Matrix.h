@@ -3,12 +3,32 @@
 #include <assert.h>
 #include <cfloat>
 
+namespace {
+
+template<typename T>
+void iszero(T* per)
+{
+	if (abs(*per) <= DBL_EPSILON)
+		*per = 0;
+}
+
+template<typename T>
+void swap(T* per_1 , T* per_2)
+{
+	T per = *per_1;
+	*per_1 = *per_2;
+	*per_2 = per;
+}
+
+};
+
+
 namespace Matrix_Ilab{
 
 template<typename T>
 class matrix
 {
-		int type;  //Если 0 - прямоугольная матрица , 1 - квадратная матрица
+		int type;//Если 0 - прямоугольная матрица , 1 - квадратная матрица
 		int num_col;
 		int num_str;
 		int count;
@@ -48,15 +68,10 @@ class matrix
 		void negate();
 		matrix<T> transpotion ();
 		T determinate();
+		void make_type_long_double();
 		//T minor_T(int str , int col);
 		//matrix<T> reverse(matrix A);
 };
-
-template<typename T>
-void swap(T* per_1 , T* per_2);
-
-template<typename T>
-void iszero(T* per);
 
 template<typename T>
 matrix<T>& matrix<T>::operator=(const matrix& rhs)
@@ -360,7 +375,6 @@ T matrix<T>::determinate()
 	}
 	det *= copy.get_val(num_str - 1, num_str - 1);
 	iszero(&det);
-	// copy.print_M();
 	return det;
 }
 
@@ -370,15 +384,7 @@ void matrix<T>::swap_rows(int row_1 , int row_2)
 	assert(row_1 < num_str);
 	assert(row_2 < num_str);
 	for (int i = 0 ; i < num_col ; i++)
-		swap(&mrx[row_1][i] , &mrx[row_2][i]);
-}
-
-template<typename T>
-void swap(T* per_1 , T* per_2)
-{
-	T per = *per_1;
-	*per_1 = *per_2;
-	*per_2 = per;
+		::swap(&mrx[row_1][i] , &mrx[row_2][i]);
 }
 
 template<typename T>
@@ -399,10 +405,11 @@ void matrix<T>::row_k(int row , float k)
 }
 
 template<typename T>
-void iszero(T* per)
+void matrix<T>::make_type_long_double()
 {
-	if (abs(*per) <= DBL_EPSILON)
-		*per = 0;
+	for (int i = 0 ; i < num_str ; ++i)
+		for ( int j = 0 ; i < num_col ; ++j)
+			(long double)mrx[i][j];
 }
 
 }
