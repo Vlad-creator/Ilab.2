@@ -232,7 +232,7 @@ TEST (swap_rows , test) {
 	EXPECT_EQ (1, test_res_3 == test_3);
 };
 
-TEST (sub_rows , test) {
+/*TEST (sub_rows , test) {
 	std::vector<int> v = {1 , 2 , 3 , 4 , 5 , 6 , 7 , 8};
 	std::vector<int> v_res = {1 , 2 , 3 , 4 , 4 , 4 , 4 , 4};
 	matrix<int> test_1(2 , 4 , v.begin() , v.end());
@@ -253,9 +253,9 @@ TEST (sub_rows , test) {
 	matrix<int> test_res_3(4 , 4 , v_res.begin() , v_res.end());
 	test_3.sub_rows(1 , 3);
 	EXPECT_EQ (1, test_res_3 == test_3);
-};
+};*/
 
-TEST (row_k , test) {
+/*TEST (row_k , test) {
 	std::vector<int> v = {1 , 2 , 3 , 4 , 5 , 6 , 7 , 8};
 	std::vector<int> v_res = {1 , 2 , 3 , 4 , 0 , 0 , 0 , 0};
 	matrix<int> test_1(2 , 4 , v.begin() , v.end());
@@ -276,7 +276,7 @@ TEST (row_k , test) {
 	matrix<int> test_res_3(4 , 4 , v_res.begin() , v_res.end());
 	test_3.row_k(1 , 3);
 	EXPECT_EQ (1, test_res_3 == test_3);
-};
+};*/
 
 TEST (negate , test){
 	std::vector<int> v = {1 , 2 , 3 , 4 , 5 , 6 , 7 , 8};
