@@ -40,7 +40,7 @@ class matrix
 		T get_val(int str , int col) const {return mrx[str][col];};
 		void put_M(int str , int col , T val) const {mrx[str][col] = val;};
 		void swap_rows(int row_1 , int row_2);
-		void sub_rows(int row_1 , int row_2);//row_1 - row_2
+		void sub_rows(int row_1 , int row_2, T k = 1);//row_1 - row_2
 		void row_k(int row , float k);
 		void fill_M();
 		void fill_M_rand();
@@ -332,59 +332,35 @@ T matrix<T>::determinate()
 	assert(type == 1);
 	matrix copy = *this;
 	T det = 1;
-	for (int i = 0 ; i < num_str ; i++)
+	for (int i = 0 ; i < num_str - 1; i++)
 	{
 		T max = copy.get_val(i , i);
-		int point = i;
 		int num_s = i;
-		while (point < num_str)
-		{
-			if (copy.get_val(point , i) != 0)
-			{
-				max = copy.get_val(point , i);
-				num_s = point;
-				break;
-			};
-			point++;
-		};
-		if (max == 0)
-			return 0;
-		for (int j = i ; j < num_str ; j++)
-			if ((abs(copy.get_val(j , i)) > abs(max)) && (copy.get_val(j , i) != 0))
+		for (int j = i + 1; j < num_str ; j++)
+			if ((std::abs(copy.get_val(j , i)) > std::abs(max)))
 			{
 				max = copy.get_val(j , i);
 				num_s = j;
-			};
+			}
+		if (max == 0)
+			return 0;
 		if (num_s != i)
 		{
 			copy.swap_rows(num_s , i);
 			det = det * (-1);
 		};
+		//std::cout << "MAX: " << max << std::endl;
 		det = det * copy.get_val(i , i);
-		for (int j = i ; j < num_str ; ++j)
-		{
-			if ((j == i) || (copy.get_val(j , i) == 0))
-				continue;
-			T per = copy.get_val(j , i) / copy.get_val(i , i);
-			T* row = new T[num_col - i];
-			for (int l = 0 ; l < num_col - i ; l++)
-				row[l] = copy.get_val(i , l + i);
-			copy.row_k(i , per);
-			copy.sub_rows(j , i);
-			for (int l = 0 ; l < num_col - i ; l++)
-				copy.put_M(i , l + i , row[l]);
-			delete[] row;
-		};
-	};
-	for (int i = 0 ; i < num_str ; ++i)
-		for (int j = 0 ; j < num_col ; ++j)
-		{
-			T val = copy.get_val(i , j);
-			iszero(&val);
-			copy.put_M(i , j , val);
-		}
+		//std::cout << "DET: " << det << std::endl;
+		 for (int j = i + 1 ; j < num_str ; ++j)
+		 {
+		 	T per = copy.get_val(j , i) / max;
+		 	copy.sub_rows(j , i , per);
+		 }
+	}
+	det *= copy.get_val(num_str - 1, num_str - 1);
 	iszero(&det);
-	//copy.print_M();
+	// copy.print_M();
 	return det;
 }
 
@@ -406,12 +382,12 @@ void swap(T* per_1 , T* per_2)
 }
 
 template<typename T>
-void matrix<T>::sub_rows(int row_1 , int row_2)
+void matrix<T>::sub_rows(int row_1 , int row_2, T k)
 {
 	assert(row_1 < num_str);
 	assert(row_2 < num_str);
 	for (int i = 0 ; i < num_col ; i++)
-		mrx[row_1][i] = mrx[row_1][i] - mrx[row_2][i];
+		mrx[row_1][i] = mrx[row_1][i] - k * mrx[row_2][i];
 }
 
 template<typename T>
