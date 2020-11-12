@@ -171,7 +171,7 @@ TEST (eq , test) {
     EXPECT_EQ (1, test_res_2 == (test2 = test_2));
 };
 
-TEST (oper_matr_um , test) { 
+/*TEST (oper_matr_um , test) { 
 	std::vector<int> v_1 = {1 , 2 , 3 , 4};
 	std::vector<int> v_2 = {1 , 2 , 3 , 4};
 	std::vector<int> v_res = {7 , 10 , 15 , 22};
@@ -207,7 +207,7 @@ TEST (oper_matr_um , test) {
 	matrix<int> test_8(2 , 5 , v_2.begin() , v_2.end());
 	matrix<int> test_res_4(5 , 5 , v_res.begin() , v_res.end());
 	EXPECT_EQ (1, test_res_4 == (test_7[test_8]));
-};
+};*/
 
 TEST (swap_rows , test) {
 	std::vector<int> v = {1 , 2 , 3 , 4 , 5 , 6 , 7 , 8};
