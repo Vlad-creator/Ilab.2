@@ -24,7 +24,6 @@ void swap(T* per_1 , T* per_2)
 
 }
 
-
 namespace Matrix_Ilab{
 
 template<typename T>
@@ -43,8 +42,11 @@ class matrix
 		matrix<T>(int cols, int rows, It start, It fin);
 		template <typename It>
 		matrix<T>(int num , It start , It fin);
+		template <typename U>
+		matrix(const matrix<U>& rhs);
 		matrix(const matrix& rhs);
 		~matrix();
+
 		matrix<T>& operator=(const matrix& rhs);
 		matrix<T>& operator+(const matrix& rhs);
 		matrix<T>& operator-(const matrix& rhs);
@@ -54,11 +56,12 @@ class matrix
 		matrix<T>& operator*=(const matrix& rhs);
 		bool operator==(const matrix& rhs);
 		bool operator!=(const matrix& rhs);
-		matrix<T> operator[](const matrix& rhs);
-		int* operator[](const int rhs);
+		T* operator[](const int rhs);
+
+		matrix<T> product(const matrix& rhs);
 		int count_col() const {return num_col;};
 		int count_str() const {return num_str;};
-		int m_type() {return type;};
+		int m_type() const {return type;};
 		T get_val(int str , int col) const {return mrx[str][col];};
 		void put_M(int str , int col , T val) const {mrx[str][col] = val;};
 		void swap_rows(int row_1 , int row_2);
@@ -69,8 +72,7 @@ class matrix
 		void print_M();
 		void negate();
 		matrix<T> transpotion ();
-		T determinate();
-		void make_type_long_double();
+		long double determinate();
 		//T minor_T(int str , int col);
 		//matrix<T> reverse(matrix A);
 };
@@ -78,14 +80,28 @@ class matrix
 template<typename T>
 matrix<T>& matrix<T>::operator=(const matrix& rhs)
 {
-	matrix(rhs.count_str(), rhs.count_col());
-	for (int i = 0 ; i < rhs.count_str() ; i++)
-		for (int j = 0 ; j < rhs.count_col() ; j++)
+	if (*this == rhs)
+		return *this;
+
+	if ((num_str != rhs.count_str()) || (num_col != rhs.count_col()))
+	{
+		for (int i = 0 ; i < num_str ; ++i)
+			delete[] mrx[i];
+		delete[] mrx;
+		mrx = new T* [rhs.count_str()];
+		num_str == rhs.count_str();
+		num_col == rhs.count_col();
+		count = rhs.count_col() * rhs.count_str();
+		type = rhs.type;
+	};
+
+	for (int i = 0 ; i < rhs.count_str() ; ++i)
+	{
+		mrx[i] = new T [rhs.count_col()];
+		for (int j = 0 ; j < rhs.count_col() ; ++j)
 			mrx[i][j] = rhs.get_val(i , j);
-	num_col = rhs.count_col();
-	num_str = rhs.count_str();
-	count = rhs.count_col() * rhs.count_str();
-	type = rhs.type;
+	};
+
 	return *this;
 }
 
@@ -121,11 +137,12 @@ matrix<T>& matrix<T>::operator*(const matrix& rhs)
 }
 
 template<typename T>
-int* matrix<T>::operator[](const int rhs)
+T* matrix<T>::operator[](const int rhs)
 {
 	assert(rhs >= 0);
 	assert(rhs < num_str);
-	int* str = new T [num_str];
+
+	T* str = new T [num_col];
 	for (int i = 0 ; i < num_col ; i++)
 		str[i] = mrx[rhs][i];
 	return str;
@@ -133,9 +150,10 @@ int* matrix<T>::operator[](const int rhs)
 
 //Умножает матрицы как надо это делать правильно
 template<typename T>
-matrix<T> matrix<T>::operator[](const matrix& rhs)
+matrix<T> matrix<T>::product(const matrix& rhs)
 {
 	assert(num_col == rhs.count_str());
+
 	int sum = 0;
 	matrix result(num_str , rhs.count_col());
 	for (int i = 0 ; i < num_str ; i++)
@@ -189,6 +207,7 @@ bool matrix<T>::operator==(const matrix<T>& rhs)
 {
 	assert(num_col == rhs.count_col());
 	assert(num_str == rhs.count_str());
+
 	for (int i = 0 ; i < num_str ; ++i)
 		for (int j = 0 ; j < num_col ; ++j)
 			if (mrx[i][j] != rhs.get_val(i , j))
@@ -201,6 +220,7 @@ bool matrix<T>::operator!=(const matrix<T>& rhs)
 {
 	assert(num_col == rhs.count_col());
 	assert(num_str == rhs.count_str());
+
 	if (*this == rhs)
 		return 0;
 	return 1;
@@ -252,6 +272,7 @@ matrix<T>::matrix(int num_s , int num_c , It start , It fin)
 	num_col = num_c;
 	num_str = num_s;
 	mrx = new T* [num_str];
+
 	for (int j = 0 ; j < num_str ; ++j)
 		mrx[j] = new T [num_col];
 	count = num_col * num_str;
@@ -271,6 +292,7 @@ matrix<T>::matrix(int num , It start , It fin)
 	num_col = num;
 	num_str = num;
 	mrx = new T* [num];
+
 	for (int j = 0 ; j < num ; ++j)
 		mrx[j] = new T [num];
 	count = num_col * num_str;
@@ -281,6 +303,22 @@ matrix<T>::matrix(int num , It start , It fin)
 			mrx[i][j] = *start;
 			start++;
 		};
+}
+
+template <typename T>
+template <typename U>
+matrix<T>::matrix(const matrix<U>& rhs)
+{
+	num_str = rhs.count_str();
+	num_col = rhs.count_col();
+	mrx = new T* [num_str];
+
+	for (int i = 0 ; i < num_str ; ++i)
+	{
+		mrx[i] = new T [num_col];
+		for (int j = 0 ; j < num_col ; ++j)
+			mrx[i][j] = rhs.get_val(i , j);
+	};
 }
 
 template<typename T>
@@ -319,6 +357,7 @@ void matrix<T>::print_M()
 	std::cout << "num_col = " << num_col << "\n";
 	std::cout << "num_str = " << num_str << "\n";
 	std::cout << "type = " << type << "\n";
+
 	for (int i = 0 ; i < num_str ; ++i)
 	{
 		for (int j = 0 ; j < num_col ; ++j)
@@ -337,7 +376,7 @@ matrix<T> matrix<T>::transpotion()
 	matrix<T> A_trans(num_c , num_s);
 	for (int i = 0 ; i < num_c ; i++)
 		for (int j = 0 ; j < num_s ; j++)
-			A_trans.put_M(i , j , get_val(j , i));
+			A_trans.put_M(i , j , mrx[j][i]);
 	return A_trans;
 }
 
@@ -352,14 +391,14 @@ void matrix<T>::negate()
 
 //функция нахождения детерминанта
 template<typename T>
-T matrix<T>::determinate()
+long double matrix<T>::determinate()
 {
 	assert(type == 1);
-	matrix copy = *this;
-	T det = 1;
+	matrix<long double> copy(*this);
+	long double det = 1;
 	for (int i = 0 ; i < num_str - 1; i++)
 	{
-		T max = copy.get_val(i , i);
+		long double max = copy.get_val(i , i);
 		int num_s = i;
 		for (int j = i + 1; j < num_str ; j++)
 			if ((std::abs(copy.get_val(j , i)) > std::abs(max)))
@@ -379,12 +418,12 @@ T matrix<T>::determinate()
 		//std::cout << "DET: " << det << std::endl;
 		 for (int j = i + 1 ; j < num_str ; ++j)
 		 {
-		 	T per = copy.get_val(j , i) / max;
+		 	long double per = copy[j][i] / max;
 		 	copy.sub_rows_k(j , i , per);
 		 }
 	}
 	det *= copy.get_val(num_str - 1, num_str - 1);
-	iszero(&det);
+	::iszero(&det);
 	return det;
 }
 
@@ -394,6 +433,7 @@ void matrix<T>::swap_rows(int row_1 , int row_2)
 {
 	assert(row_1 < num_str);
 	assert(row_2 < num_str);
+
 	for (int i = 0 ; i < num_col ; i++)
 		::swap(&mrx[row_1][i] , &mrx[row_2][i]);
 }
@@ -404,16 +444,9 @@ void matrix<T>::sub_rows_k(int row_1 , int row_2, T k)
 {
 	assert(row_1 < num_str);
 	assert(row_2 < num_str);
+
 	for (int i = 0 ; i < num_col ; i++)
 		mrx[row_1][i] = mrx[row_1][i] - k * mrx[row_2][i];
-}
-
-template<typename T>
-void matrix<T>::make_type_long_double()
-{
-	for (int i = 0 ; i < num_str ; ++i)
-		for ( int j = 0 ; j < num_col ; ++j)
-			(long double)mrx[i][j];
 }
 
 }
