@@ -83,23 +83,23 @@ matrix<T>& matrix<T>::operator=(const matrix& rhs)
 	if (*this == rhs)
 		return *this;
 
-	if ((num_str != rhs.count_str()) || (num_col != rhs.count_col()))
+	if ((num_str != rhs.num_str) || (num_col != rhs.num_col))
 	{
 		for (int i = 0 ; i < num_str ; ++i)
 			delete[] mrx[i];
 		delete[] mrx;
-		mrx = new T* [rhs.count_str()];
-		num_str == rhs.count_str();
-		num_col == rhs.count_col();
-		count = rhs.count_col() * rhs.count_str();
+		mrx = new T* [rhs.num_str];
+		num_str == rhs.num_str;
+		num_col == rhs.num_col;
+		count = rhs.num_col * rhs.num_str;
 		type = rhs.type;
 	};
 
-	for (int i = 0 ; i < rhs.count_str() ; ++i)
+	for (int i = 0 ; i < rhs.num_str ; ++i)
 	{
-		mrx[i] = new T [rhs.count_col()];
-		for (int j = 0 ; j < rhs.count_col() ; ++j)
-			mrx[i][j] = rhs.get_val(i , j);
+		mrx[i] = new T [rhs.num_col];
+		for (int j = 0 ; j < rhs.num_col ; ++j)
+			mrx[i][j] = rhs.mrx[i][j];
 	};
 
 	return *this;
@@ -108,8 +108,8 @@ matrix<T>& matrix<T>::operator=(const matrix& rhs)
 template<typename T>
 matrix<T>& matrix<T>::operator+(const matrix& rhs)
 {
-	assert(num_col == rhs.count_col());
-	assert(num_str == rhs.count_str());
+	assert(num_col == rhs.num_col);
+	assert(num_str == rhs.num_str);
 	matrix<T> buf = *this;
 	buf += rhs;
 	return buf;
@@ -118,8 +118,8 @@ matrix<T>& matrix<T>::operator+(const matrix& rhs)
 template<typename T>
 matrix<T>& matrix<T>::operator-(const matrix& rhs)
 {
-	assert(num_col == rhs.count_col());
-	assert(num_str == rhs.count_str());
+	assert(num_col == rhs.num_col);
+	assert(num_str == rhs.num_str);
 	matrix<T> buf = *this;
 	buf -= rhs;
 	return buf;
@@ -129,8 +129,8 @@ matrix<T>& matrix<T>::operator-(const matrix& rhs)
 template<typename T>
 matrix<T>& matrix<T>::operator*(const matrix& rhs)
 {
-	assert(num_col == rhs.count_col());
-	assert(num_str == rhs.count_str());
+	assert(num_col == rhs.num_col);
+	assert(num_str == rhs.num_str);
 	matrix<T> buf = *this;
 	buf *= rhs;
 	return buf;
@@ -152,16 +152,16 @@ T* matrix<T>::operator[](const int rhs)
 template<typename T>
 matrix<T> matrix<T>::product(const matrix& rhs)
 {
-	assert(num_col == rhs.count_str());
+	assert(num_col == rhs.num_str);
 
 	int sum = 0;
-	matrix result(num_str , rhs.count_col());
+	matrix result(num_str , rhs.num_col);
 	for (int i = 0 ; i < num_str ; i++)
 	{
-		for(int j = 0 ; j < rhs.count_col() ; j++)
+		for(int j = 0 ; j < rhs.num_col ; j++)
 		{
 			for (int k = 0 ; k < num_col ; k++)
-				sum = sum + mrx[i][k] * rhs.get_val(k , j);
+				sum = sum + mrx[i][k] * rhs.mrx[k][j];
 			result.put_M(i , j , sum);
 			sum = 0;
 		};
@@ -172,45 +172,45 @@ matrix<T> matrix<T>::product(const matrix& rhs)
 template<typename T>
 matrix<T>& matrix<T>::operator+=(const matrix<T>& rhs)
 {
-	assert(num_col == rhs.count_col());
-	assert(num_str == rhs.count_str());
+	assert(num_col == rhs.num_col);
+	assert(num_str == rhs.num_str);
 	for (int i = 0 ; i < num_str ; ++i)
 		for (int j = 0 ; j < num_col ; ++j)
-			mrx[i][j] += rhs.get_val(i , j);
+			mrx[i][j] += rhs.mrx[i][j];
 	return *this;
 }
 
 template<typename T>
 matrix<T>& matrix<T>::operator-=(const matrix<T>& rhs)
 {
-	assert(num_col == rhs.count_col());
-	assert(num_str == rhs.count_str());
+	assert(num_col == rhs.num_col);
+	assert(num_str == rhs.num_str);
 	for (int i = 0 ; i < num_str ; ++i)
 		for (int j = 0 ; j < num_col ; ++j)
-			mrx[i][j] -= rhs.get_val(i , j);
+			mrx[i][j] -= rhs.mrx[i][j];
 	return *this;
 }
 
 template<typename T>
 matrix<T>& matrix<T>::operator*=(const matrix<T>& rhs)
 {
-	assert(num_col == rhs.count_col());
-	assert(num_str == rhs.count_str());
+	assert(num_col == rhs.num_col);
+	assert(num_str == rhs.num_str);
 	for (int i = 0 ; i < num_str ; ++i)
 		for (int j = 0 ; j < num_col ; ++j)
-			mrx[i][j] *= rhs.get_val(i , j);
+			mrx[i][j] *= rhs.mrx[i][j];
 	return *this;
 }
 
 template <typename T>
 bool matrix<T>::operator==(const matrix<T>& rhs)
 {
-	assert(num_col == rhs.count_col());
-	assert(num_str == rhs.count_str());
+	assert(num_col == rhs.num_col);
+	assert(num_str == rhs.num_str);
 
 	for (int i = 0 ; i < num_str ; ++i)
 		for (int j = 0 ; j < num_col ; ++j)
-			if (mrx[i][j] != rhs.get_val(i , j))
+			if (mrx[i][j] != rhs.mrx[i][j])
 				return 0;
 	return 1;
 }
@@ -218,8 +218,8 @@ bool matrix<T>::operator==(const matrix<T>& rhs)
 template <typename T>
 bool matrix<T>::operator!=(const matrix<T>& rhs)
 {
-	assert(num_col == rhs.count_col());
-	assert(num_str == rhs.count_str());
+	assert(num_col == rhs.num_col);
+	assert(num_str == rhs.num_str);
 
 	if (*this == rhs)
 		return 0;
@@ -229,15 +229,15 @@ bool matrix<T>::operator!=(const matrix<T>& rhs)
 template<typename T>
 matrix<T>::matrix(const matrix& rhs)
 {
-	mrx = new T* [rhs.count_str()];
-	for (int j = 0 ; j < rhs.count_str() ; ++j)
-		mrx[j] = new T [rhs.count_col()];
-	for (int i = 0 ; i < rhs.count_str() ; i++)
-		for (int j = 0 ; j < rhs.count_col() ; j++)
-			mrx[i][j] = rhs.get_val(i , j);
-	num_col = rhs.count_col();
-	num_str = rhs.count_str();
-	count = rhs.count_col() * rhs.count_str();
+	mrx = new T* [rhs.num_str];
+	for (int j = 0 ; j < rhs.num_str ; ++j)
+		mrx[j] = new T [rhs.num_col];
+	for (int i = 0 ; i < rhs.num_str ; i++)
+		for (int j = 0 ; j < rhs.num_col ; j++)
+			mrx[i][j] = rhs.mrx[i][j];
+	num_col = rhs.num_col;
+	num_str = rhs.num_str;
+	count = rhs.num_col * rhs.num_str;
 	type = rhs.type;
 }
 
@@ -371,8 +371,8 @@ void matrix<T>::print_M()
 template<typename T>
 matrix<T> matrix<T>::transpotion()
 {
-	int num_s = count_str();
-	int num_c = count_col();
+	int num_s = num_str;
+	int num_c = num_col;
 	matrix<T> A_trans(num_c , num_s);
 	for (int i = 0 ; i < num_c ; i++)
 		for (int j = 0 ; j < num_s ; j++)
@@ -424,6 +424,7 @@ long double matrix<T>::determinate()
 	}
 	det *= copy.get_val(num_str - 1, num_str - 1);
 	::iszero(&det);
+	static_cast<T>(det);
 	return det;
 }
 
