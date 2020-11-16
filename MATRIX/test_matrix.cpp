@@ -171,14 +171,14 @@ TEST (eq , test) {
     EXPECT_EQ (1, test_res_2 == (test2 = test_2));
 };
 
-/*TEST (oper_matr_um , test) { 
+TEST (oper_matr_um , test) { 
 	std::vector<int> v_1 = {1 , 2 , 3 , 4};
 	std::vector<int> v_2 = {1 , 2 , 3 , 4};
 	std::vector<int> v_res = {7 , 10 , 15 , 22};
 	matrix<int> test_1(2 , 2 , v_1.begin() , v_1.end());
 	matrix<int> test_2(2 , 2 , v_2.begin() , v_2.end());
 	matrix<int> test_res_1(2 , 2 , v_res.begin() , v_res.end());
-    EXPECT_EQ (1, test_res_1 == (test_1[test_2]));
+    EXPECT_EQ (1, test_res_1 == (test_1.product(test_2)));
 
     v_1 = {2 , 3 , 4 , 5};
     v_2 = {1 , 0 , 0 , 1};
@@ -186,7 +186,7 @@ TEST (eq , test) {
     matrix<int> test_3(2 , 2 , v_1.begin() , v_1.end());
 	matrix<int> test_4(2 , 2 , v_2.begin() , v_2.end());
 	matrix<int> test_res_2(2 , 2 , v_res.begin() , v_res.end());
-	EXPECT_EQ (1, test_res_2 == (test_3[test_4]));
+	EXPECT_EQ (1, test_res_2 == (test_3.product(test_4)));
 
 	v_1 = {156 , 3456 , 409 , -68};
     v_2 = {0 , 0 , 0 , 0};
@@ -194,7 +194,7 @@ TEST (eq , test) {
     matrix<int> test_5(2 , 2 , v_1.begin() , v_1.end());
 	matrix<int> test_6(2 , 2 , v_2.begin() , v_2.end());
 	matrix<int> test_res_3(2 , 2 , v_res.begin() , v_res.end());
-	EXPECT_EQ (1, test_res_3 == (test_5[test_6]));
+	EXPECT_EQ (1, test_res_3 == (test_5.product(test_6)));
 
 	v_1 = {1 , 2 , 3 , 4 , 5 , 6 , 7 , 8 , 9 , 10};
     v_2 = {11 , 12 , 13 , 14 , 15 , 16 , 17 , 18 , 19 , 20};
@@ -206,8 +206,8 @@ TEST (eq , test) {
     matrix<int> test_7(5 , 2 , v_1.begin() , v_1.end());
 	matrix<int> test_8(2 , 5 , v_2.begin() , v_2.end());
 	matrix<int> test_res_4(5 , 5 , v_res.begin() , v_res.end());
-	EXPECT_EQ (1, test_res_4 == (test_7[test_8]));
-};*/
+	EXPECT_EQ (1, test_res_4 == (test_7.product(test_8)));
+};
 
 TEST (swap_rows , test) {
 	std::vector<int> v = {1 , 2 , 3 , 4 , 5 , 6 , 7 , 8};
