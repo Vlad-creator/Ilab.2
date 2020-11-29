@@ -6,5 +6,3 @@ do
 	./e2e_tests < ../tests_e2e/test$i > ../tests_e2e/answer
 	./check < ../tests_e2e/test_answer$i
 done
-	rm check
-	rm e2e_tests
