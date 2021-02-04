@@ -3,18 +3,6 @@
 #include <assert.h>
 #include <cfloat>
 
-namespace {
-
-//Опредение равно ли число нулю
-template<typename T>
-void iszero(T* per)
-{
-	if (abs(*per) <= DBL_EPSILON)
-		*per = 0;
-}
-
-}
-
 namespace Matrix_Ilab{
 
 template<typename T>
@@ -57,7 +45,7 @@ class matrix
 		T get_val(int str , int col) const {return mrx[str][col];};
 		void put_M(int str , int col , T val) const {mrx[str][col] = val;};
 		void swap_rows(int row_1 , int row_2);
-		void sub_rows_k(int row_1 , int row_2, T k = 1);//row_1 - row_2
+		void sub_rows_k(int row_1 , int row_2, T k = 1);//row_1 - k * row_2
 		void row_k(int row , float k);
 		void fill_M();
 		void fill_M_rand();
@@ -65,7 +53,7 @@ class matrix
 		void negate();
 		matrix<T> transpotion ();
 		long double determinate();
-		//T minor_T(int str , int col);
+		T minor_T(int str , int col);
 		//matrix<T> reverse(matrix A);
 };
 
@@ -326,7 +314,7 @@ void matrix<T>::cleanup()
 	delete[] mrx;
 }
 
-//заполняет матрицу с потока ввода
+//fill matrix by stdin
 template<typename T>
 void matrix<T>::fill_M()
 {
@@ -337,7 +325,7 @@ void matrix<T>::fill_M()
 	}
 }
 
-//заполняет матрицу случайными значениями
+//fill matrix by random values
 template<typename T>
 void matrix<T>::fill_M_rand()
 {
@@ -346,7 +334,7 @@ void matrix<T>::fill_M_rand()
 			mrx[i][j] = ((rand() % 10) - 5);
 }
 
-//выводит на экран матрицу со всеми её данными
+//print the Matrix
 template<typename T>
 void matrix<T>::print_M()
 {
@@ -364,7 +352,7 @@ void matrix<T>::print_M()
 	std::cout << "\n";
 }
 
-//выполняет транспонирование матрицы
+//transpose matrix
 template<typename T>
 matrix<T> matrix<T>::transpotion()
 {
@@ -386,7 +374,7 @@ void matrix<T>::negate()
 			mrx[i][j] = (-1) * mrx[i][j];
 }
 
-//функция нахождения детерминанта
+//find the determinate
 template<typename T>
 long double matrix<T>::determinate()
 {
@@ -420,12 +408,11 @@ long double matrix<T>::determinate()
 		 }
 	}
 	det *= copy.get_val(num_str - 1, num_str - 1);
-	::iszero(&det);
 	static_cast<T>(det);
 	return det;
 }
 
-//меняет местами две строки в матрице
+//swap 2 rows
 template<typename T>
 void matrix<T>::swap_rows(int row_1 , int row_2)
 {
@@ -445,6 +432,20 @@ void matrix<T>::sub_rows_k(int row_1 , int row_2, T k)
 
 	for (int i = 0 ; i < num_col ; i++)
 		mrx[row_1][i] = mrx[row_1][i] - k * mrx[row_2][i];
+}
+
+template<typename T>
+T minor_T(int str , int col)
+{
+	matrix<T> minor(num_str - 1 ; num_col - 1);
+	//Make the minor of matrix
+	for (int i = 0 ; i < num_str ; ++i)
+		for (int j = 0 ; j < num_col ; ++j)
+			if  ((i != str) && (j != col))
+				minor[i][j] = mrx[i][j];
+
+	T res = minor.minor_T(str , col);
+	return res;
 }
 
 }
