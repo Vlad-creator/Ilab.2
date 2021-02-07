@@ -4,7 +4,7 @@ bool proect_cross(triangle t1 , triangle t2 , point line)
 	int counter = 0;
 	std::vector<float> lines_t1 = {};
 	std::vector<float> lines_t2 = {};
-	line.print();
+	//line.print();
 	lines_t1.push_back(dot_product(t1.p1_ , line));
 	lines_t1.push_back(dot_product(t1.p2_ , line));
 	lines_t1.push_back(dot_product(t1.p3_ , line));
