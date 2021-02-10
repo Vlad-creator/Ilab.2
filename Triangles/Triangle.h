@@ -4,6 +4,7 @@ struct point
 
 	void print() const;
 	point& operator=(const point& p);
+	bool operator==(const point& p);
 	float get_max();
 	point(float x , float y , float z): x_(x) , y_(y) , z_(z) {};
 	point(): x_(0) , y_(0) , z_(0) {};
@@ -41,6 +42,14 @@ point& point::operator=(const point& p)
 	return *this;
 }
 
+bool point::operator==(const point& p)
+{
+	if ((x_ == p.x_) && (y_ == p.y_) && (z_ == p.z_))
+		return true;
+	else
+		return false;
+}
+
 void point::print() const
 {
 	std::cout << "point (" << x_ << ' ' << y_ << ' ' << z_ << ')' << std::endl;
@@ -67,7 +76,7 @@ struct triangle
 	void print() const;
 	point find_norm_tr();
 	point find_norm_ln(point line);
-	point max_point();
+	float max_point();
 	triangle(point p1 , point p2 , point p3);
 	triangle();
 };
@@ -87,7 +96,7 @@ triangle::triangle(point p1 , point p2 , point p3)
 	p3_ = p3;
 }
 
-point triangle::max_point()
+float triangle::max_point()
 {
 	point max;
 	if ((abs(p1_.x_) >= abs(p2_.x_)) && (abs(p1_.x_) >= abs(p3_.x_)))
@@ -115,13 +124,17 @@ point triangle::max_point()
 			max.z_ = abs(p2_.z_);
 		else
 			max.z_ = abs(p3_.z_);
-	return max;
+
+	float max_res = max.get_max();
+	return max_res;
 }
 
 point triangle::find_norm_tr()
 {
 	point vec1 = make_vec(p1_ , p2_);
+	//vec1.print();
 	point vec2 = make_vec(p1_ , p3_);
+	//vec2.print();
 	point norm_tr = vec_product(vec1 , vec2);
 	return norm_tr;
 }
