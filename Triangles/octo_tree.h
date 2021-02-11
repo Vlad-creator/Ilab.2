@@ -1,3 +1,4 @@
+
 struct region;
 struct tree_node;
 class octo_tree;
@@ -38,7 +39,7 @@ public:
 
 class octo_tree
 {
-	tree_node node_t;
+	tree_node* node_t;
 
 public:
 	void set_edge();
@@ -95,6 +96,21 @@ tree_node::tree_node()
 	}
 }
 
+tree_node::tree_node(std::vector<triangle> TRs)
+{
+	space.center.x_ = 0;
+	space.center.y_ = 0;
+	space.center.z_ = 0;
+	space.edge = 0;
+
+	TRs_ = TRs;
+
+	for (int i = 0 ; i < 8 ; ++i)
+	{
+		children[i] = nullptr;
+	}
+}
+
 tree_node::~tree_node()
 {
 	/*for (int i = 0 ; i < 8 ; ++i)
@@ -105,43 +121,59 @@ tree_node::~tree_node()
 
 octo_tree::octo_tree()
 {
-	node_t.space.center.x_ = 0;
-	node_t.space.center.y_ = 0;
-	node_t.space.center.z_ = 0;
-	node_t.space.edge = 0;
+	node_t = new tree_node;
+
+	node_t->space.center.x_ = 0;
+	node_t->space.center.y_ = 0;
+	node_t->space.center.z_ = 0;
+	node_t->space.edge = 0;
 
 	for (int i = 0 ; i < 8 ; ++i)
 	{
-		free(node_t.children[i]);
+		node_t->children[i] = nullptr;
 	}
 }
 
 octo_tree::octo_tree(std::vector<triangle> TRs)
 {
-	node_t.space.center.x_ = 0;
-	node_t.space.center.y_ = 0;
-	node_t.space.center.z_ = 0;
-	node_t.space.edge = 0;
+	node_t = new tree_node;
 
-	node_t.TRs_ = TRs;
+	node_t->space.center.x_ = 0;
+	node_t->space.center.y_ = 0;
+	node_t->space.center.z_ = 0;
+	node_t->space.edge = 0;
+
+	node_t->TRs_ = TRs;
 
 	for (int i = 0 ; i < 8 ; ++i)
 	{
-		free(node_t.children[i]);
+		node_t->children[i] = nullptr;
 	}
 }
 
 octo_tree::~octo_tree()
 {
-	/*for (int i = 0 ; i < 8 ; ++i)
+	tree_node* node = nullptr;
+	std::queue<tree_node*> per;
+	per.push(node_t);
+
+	while (per.empty() == false)
 	{
-		free(node_t.children[i]);
-	}*/
+		node = per.front();
+		per.pop();
+
+		for (int i = 0 ; i < 8 ; ++i)
+		{
+			if (node->children[i] != nullptr)
+				per.push(node->children[i]->node_t);
+		}
+		delete node;
+	}
 }
 
 std::vector<region> octo_tree::make_regions()
 {
-	region parent = node_t.space;
+	region parent = node_t->space;
 	region children[8];
 	std::vector<region> res;
 	for (int i = 0 ; i < 8 ; ++i)
@@ -180,7 +212,7 @@ std::vector<region> octo_tree::make_regions()
 std::vector<triangle> octo_tree::sort_triangles(region space_)
 {	
 	std::vector<triangle> TRs;
-	for(auto it = node_t.TRs_.begin() ; it != node_t.TRs_.end() ; ++it)
+	for(auto it = node_t->TRs_.begin() ; it != node_t->TRs_.end() ; ++it)
 	{
 		/*std::cout << "test write" << std::endl;
 		std::cout << space_.edge << std::endl;
@@ -205,11 +237,11 @@ std::vector<triangle> octo_tree::sort_triangles(region space_)
 void octo_tree::set_edge()
 {
 	float edge_res = 0;
-	for (auto it = node_t.TRs_.begin() ; it != node_t.TRs_.end() ; ++it)
+	for (auto it = node_t->TRs_.begin() ; it != node_t->TRs_.end() ; ++it)
 		if (edge_res < it->max_point())
 			edge_res = it->max_point();
 
-	node_t.space.edge = edge_res;
+	node_t->space.edge = edge_res;
 
 	//std::cout << "edge - " << edge_res << std::endl;
 }
@@ -224,20 +256,20 @@ void octo_tree::make_tree()
 		std::cout << "center - ";
 		(it->get_center()).print();
 	}*/
-	if ((node_t.TRs_.size() >= 4) && (node_t.space.edge > 1))
+	if ((node_t->TRs_.size() >= 4) && (node_t->space.edge > 1))
 	{
 		for (auto it = children_regions.begin() ; it != children_regions.end() ; ++it)
 		{
 			std::vector<triangle> children_triangles = sort_triangles(*it);
 			zone = std::distance(children_regions.begin(), it);
 
-			octo_tree per{children_triangles};
-			per.node_t.space.edge = it->get_edge();
-			per.node_t.space.center = it->get_center();
+			tree_node per{children_triangles};
+			per.space.edge = it->get_edge();
+			per.space.center = it->get_center();
 
-			node_t.children[zone] = new octo_tree;
-			*(node_t.children[zone]) = per;
-			(node_t.children[zone])->make_tree();
+			node_t->children[zone] = new octo_tree;
+			*(node_t->children[zone]->node_t) = per;
+			(node_t->children[zone])->make_tree();
 			//std::cout << "zone -" << zone <<std::endl;
 		}
 	}
@@ -252,8 +284,8 @@ void octo_tree::make_tree()
 			std::cout << "triangle:" << std::endl;
 			it->print();
 		}*/
-		for (auto it_1 = node_t.TRs_.begin() ; it_1 != node_t.TRs_.end() ; ++it_1)
-			for (auto it_2 = node_t.TRs_.begin() ; it_2 != node_t.TRs_.end() ; ++it_2)
+		for (auto it_1 = node_t->TRs_.begin() ; it_1 != node_t->TRs_.end() ; ++it_1)
+			for (auto it_2 = node_t->TRs_.begin() ; it_2 != node_t->TRs_.end() ; ++it_2)
 				if ((it_1 != it_2) && (is_cross(*it_1 , *it_2)))
 				{
 					std::cout << "this triagles are crossed:" << std::endl;
@@ -276,18 +308,19 @@ void octo_tree::make_tree()
 void octo_tree::print()
 {
 	std::cout << std::endl << "this is new node" << std::endl;
-	std::cout << "edge - " << node_t.space.edge << std::endl;
+	std::cout << "edge - " << node_t->space.edge << std::endl;
 	std::cout << "center - ";
-	node_t.space.center.print();
-	for (auto it = node_t.TRs_.begin() ; it != node_t.TRs_.end() ; ++it)
+	node_t->space.center.print();
+	/*for (auto it = node_t.TRs_.begin() ; it != node_t.TRs_.end() ; ++it)
 	{
 		std::cout << "triangle:" << std::endl;
 		it->print();
-	}
+	}*/
 
 	for (int i = 0 ; i < 8 ; ++i)
 	{
-		node_t.children[i]->print();
+		if (node_t->children[i] != nullptr)
+			node_t->children[i]->print();
 	}
 }
 

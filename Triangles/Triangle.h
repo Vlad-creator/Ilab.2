@@ -10,6 +10,18 @@ struct point
 	point(): x_(0) , y_(0) , z_(0) {};
 };
 
+struct triangle
+{
+	point p1_ , p2_ , p3_;
+
+	void print() const;
+	point find_norm_tr();
+	point find_norm_ln(point line);
+	float max_point();
+	triangle(point p1 , point p2 , point p3);
+	triangle();
+};
+
 float dot_product(point& p1 , point& p2)
 {
 	float res = p1.x_ * p2.x_ + p1.y_ * p2.y_ + p1.z_ * p2.z_;
@@ -68,18 +80,6 @@ float point::get_max()
 
 	return -1;
 }
-
-struct triangle
-{
-	point p1_ , p2_ , p3_;
-
-	void print() const;
-	point find_norm_tr();
-	point find_norm_ln(point line);
-	float max_point();
-	triangle(point p1 , point p2 , point p3);
-	triangle();
-};
 
 triangle::triangle()
 {
