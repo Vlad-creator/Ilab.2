@@ -3,9 +3,10 @@
 #include <iostream>
 #include <float.h>
 #include <math.h>
+#include <assert.h>
 #include "Triangle.h"
 #include "cross_tr.h"
-#include "octo_tree.h"
+#include "octo_tree_last.h"
 
 int main()
 {
@@ -45,10 +46,11 @@ int main()
 
 	octo_tree head(TRs);
 	head.set_edge();
-	head.make_tree();
+	/*std::vector<region> regions = head.make_regions();
+	for (auto it = regions.begin() ; it != regions.end() ; ++it)
+		std::vector<triangle> res = head.sort_triangles(*it);*/
+	head.generate_tree();
 
 	//head.print();
-
-	//std::cout << res << std::endl;
 	return 0;
 }
