@@ -7,7 +7,7 @@
 
 int main()
 {
-	int N = 0;
+	size_t N = 0;
 	std::cin >> N;
 	bfr::matrix<int> test{N , N};
 
