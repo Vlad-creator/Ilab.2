@@ -370,7 +370,7 @@ T matrix<T>::determinant()
 		 }
 	}
 	det *= copy[rows_ - 1][columns_ - 1];
-	static_cast<T>(det);
+	det = static_cast<T>(det);
 	return det;
 }
 
