@@ -52,7 +52,7 @@ buffer<T>::buffer(): size_(0) , used_(0)
 template<typename T>
 buffer<T>::buffer(size_t size): size_(size) , used_(0)
 {
-	buf = ((size == 0) ? buf = nullptr : 
+	buf = ((size == 0) ? nullptr : 
 			static_cast<T*>(::operator new(sizeof(T) * size)));
 }
 

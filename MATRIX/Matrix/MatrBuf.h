@@ -32,11 +32,17 @@ template<typename T>
 MatrBuf<T>::MatrBuf(size_t rows , size_t columns): buffer<T>(rows * columns) , 
 												   rows_(rows) , columns_(columns) 
 {
-	MBuf = ((rows == 0) || (columns == 0)) ? nullptr : 	
-		static_cast<T**>(::operator new (sizeof(T*) * (rows)));
-	for (size_t i = 0 ; i < rows ; ++i)
+	if ((rows == 0) || (columns == 0))
 	{
-		MBuf[i] = (buf + i * columns_);
+		MBuf = nullptr;
+	}
+	else
+	{
+		MBuf = static_cast<T**>(::operator new (sizeof(T*) * (rows)));
+		for (size_t i = 0 ; i < rows ; ++i)
+		{
+			MBuf[i] = (buf + i * columns_);
+		}
 	}
 }
 

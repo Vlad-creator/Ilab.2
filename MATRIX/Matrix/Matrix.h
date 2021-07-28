@@ -23,8 +23,7 @@ class matrix : private MatrBuf<T>
 	};
 
 public:
-	matrix<T>(size_t rows , size_t columns , T val = T{});
-	matrix<T>();
+	matrix<T>(size_t rows = 0 , size_t columns = 0 , T val = T{});
 	matrix& operator=(const matrix& rhs);
 	matrix(const matrix& rhs);
 	matrix(matrix&& rhs);
@@ -32,7 +31,7 @@ public:
 	template<typename U>
 	matrix(const matrix<U>& rhs);
 	template <typename It>
-	matrix(size_t rows, size_t columns, It start, It fin);
+	matrix(size_t rows, size_t columns, It start , It fin);
 	~matrix() {};
 
 	ProxyRow operator[](size_t id);
@@ -102,9 +101,6 @@ const typename matrix<T>::ProxyRow matrix<T>::operator[](size_t id) const
 }
 
 template<typename T>
-matrix<T>::matrix(): MatrBuf<T>() {};
-
-template<typename T>
 matrix<T>::matrix(size_t rows , size_t columns , T val): MatrBuf<T>(rows , columns) 
 {
 	for (size_t i = 0 ; i < rows ; ++i)
@@ -117,6 +113,11 @@ template <typename T>
 template <typename It>
 matrix<T>::matrix(size_t rows , size_t columns , It start , It fin): MatrBuf<T>(rows , columns)
 {
+	if (std::distance(start , fin) != rows * columns)
+	{
+		throw std::logic_error{"sizeof container != sizeof matrix"};
+	}
+
 	for (int i = 0 ; i < rows_ ; ++i)
 		for (int j = 0 ; j < columns_ ; ++j)
 		{
